@@ -1,29 +1,21 @@
-# Python circleci config file
+version: 2.1
 
-version: 2
+orbs:
+  python: circleci/python@0.2.1
+
 jobs:
-  build:
-    docker:
-      - image: circleci/python:3.6
-    working directory: ~/repo
+  build-and-test:
+    executor: python/default
     steps:
       - checkout
-      - restore_cache:
-          keys: 
-             - v1-dependencies-{{ checksum "requirements.txt" }}
-             - v1-dependencies-
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache
       - run:
-          name: install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            make install
-      - save_cache:
-          paths:
-            - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
-      - run:
-            name: run lint
-            command: |
-              . venv/bin/activate 
-              make lint
+          command: ./manage.py test
+          name: Test
+
+workflows:
+  main:
+    jobs:
+      - build-and-test
