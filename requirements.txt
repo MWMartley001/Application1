@@ -1,0 +1,5 @@
+Flask
+pandas
+pylint
+jsonify
+google-cloud-automl
