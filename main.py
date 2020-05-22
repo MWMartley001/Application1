@@ -1,28 +1,78 @@
-from flask import Flask
+from flask import Flask, request
 from google.cloud import automl_v1beta1 as automl
+from predictor import get_prediction
 app = Flask(__name__)
+app.config["DEBUG"] = True
 
-# AutoML requirements/inputs for prediction
-project_id = 'application1-274321'
-compute_region = 'us-central1'
-model_display_name = 'telco_churn'
-inputs = {"contract_monthly": '0', "contract_one_year": '0', "contract_two_year": '1',
- "Dependents": '1', "gender": '1', "InternetService": '1', "MultipleLines": '1',
- "PaperlessBilling": '1', "Partner": '0', "PhoneService": '1', "SeniorCitizen": '0',
- "tenure": 6, "TotalCharges": 300.00}
+@app.route('/', methods=["GET", "POST"])
+def adder_page():
+    errors = ""
+    if request.method == "POST":
+        con_mo = None
+        con_one_year = None 
+        con_two_year = None 
+        deps = None 
+        gend = None 
+        net = None 
+        mlines = None
+        pbilling = None 
+        partner = None 
+        phone_serv = None 
+        sen_cit = None 
+        ten = None 
+        total_charge = None 
+        try: 
+            con_mo = str(request.form["Monthly_Contract"])
+            con_one_year = str(request.form["Annual_Contract"])
+            con_two_year = str(request.form["Two_Year_Contract"])
+            deps = str(request.form["Dependents"])
+            gend = str(request.form["Gender"])
+            net = str(request.form["Internet"])
+            mlines = str(request.form["Multiple_Lines"])
+            pbilling = str(request.form["Paperless_Billing"])
+            partner = str(request.form["Partner"])
+            phone_serv = str(request.form["Phone_Service"])
+            sen_cit = str(request.form["Senior_Citizen"])
+            ten = int(request.form["Tenure"])
+            total_charge = float(request.form["Total_Charges"])
+        except:
+            errors += "<p>Something is wrong.</p>\n"
+        result = get_prediction(con_mo,con_one_year,con_two_year,deps,gend,net,mlines,pbilling,partner,phone_serv,sen_cit,ten,total_charge)
+        return '''
+            <html>
+                <body>
+                    <p>{result}</p>
+                    <p><a href="/">Click here to calculate again</a>
+                </body>
+            </html>
+        '''.format(result=result)
 
-# homepage
-@app.route('/')
-def placeholder():
-    return "Churn Predictions"
+    return '''
+        <html>
+            <body>
+                {errors}
+                <h1>Churn Probability Estimator: Telco</h1>
+                <p>Enter the inputs:</p>
+                <form method="post" action=".">
+                    <p>Monthly Contract? <input name="Monthly_Contract" /></p>
+                    <p>Annual Contract? <input name="Annual_Contract" /></p>
+                    <p>Two Year Contract? <input name="Two_Year_Contract" /></p>
+                    <p>Dependents? <input name="Dependents" /></p>
+                    <p>Gender? <input name="Gender" /></p>
+                    <p>Internet? <input name="Internet" /></p>
+                    <p>Multiple Lines? <input name="Multiple_Lines" /></p>
+                    <p>Paperless Billing? <input name="Paperless_Billing" /></p>
+                    <p>Partner? <input name="Partner" /></p>
+                    <p>Phone Service? <input name="Phone_Service" /></p>
+                    <p>Senior Citizen? <input name="Senior_Citizen" /></p>
+                    <p>Tenure? <input name="Tenure" /></p>
+                    <p>Total Charges? <input name="Total_Charges" /></p>
+                    <p><input type="submit" value="Get Prediction" /></p>
+                </form>
+            </body>
+        </html>
+    '''.format(errors=errors)
 
-# return predictions
-@app.route('/predict', methods=['GET', 'POST'])
-def get_result():
-    client = automl.TablesClient(project=project_id, region=compute_region)
-    response = client.predict(model_display_name=model_display_name, inputs=inputs)
-    print("Prediction results:")
-    return str(response.payload)
 
 if __name__ == '__main__': 
     app.run()
