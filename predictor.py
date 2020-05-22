@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask
 from google.cloud import automl_v1beta1 as automl
 app = Flask(__name__)
 app.config["DEBUG"] = True
