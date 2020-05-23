@@ -1,6 +1,2 @@
 runtime: python37
-service: Application1
-    
-handlers:
-    - url: /.*
-      script: auto
+
