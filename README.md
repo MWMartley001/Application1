@@ -20,7 +20,7 @@ Pipeline: The data is stored in Cloud Storage and using the BigQuery Data Transf
 
 Deployment: The source files are stored in Github, pushed to Cloud Source Repositories, and utilizing a trigger the app automatically deploys.
 
-Interface: Python (w/Flask) and HTML comprise the front end. The model is stored in AutoML Tables. When a user inputs data into the required fields to yield a prediction, the data is sent to the model and the model returns a probability of churn. The model used for predictions has an accuracy of 80%.
+Interface: Python (w/Flask) and HTML comprise the front end. The model is stored in AutoML Tables. When a user inputs data into the required fields to yield a prediction, the data is sent to the model and the model returns a probability of churn. The model used for predictions has an accuracy of 80%. The interface location is found here (when deployed): https://application1-274321.uc.r.appspot.com/
 
 # Authors
 
