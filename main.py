@@ -1,4 +1,4 @@
-
+#front-end file
 
 from flask import Flask, request
 from google.cloud import automl_v1beta1 as automl
