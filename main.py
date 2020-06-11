@@ -1,10 +1,11 @@
-# frontend file
+
 
 from flask import Flask, request
 from google.cloud import automl_v1beta1 as automl
 from predictor import get_prediction
 app = Flask(__name__)
 app.config["DEBUG"] = True
+
 
 @app.route('/', methods=["GET", "POST"])
 def adder_page():
