@@ -16,9 +16,11 @@ The dataset includes over 7040 observations, with both categorical and numeric d
 
 # System Overview
 
-Pipeline: The pipeline behind the model is simple. The original dataset is stored on Cloud Storage, and on a monthly basis the data is transferred to BigQuery (using Data Transfer) and processed using Dataprep (from BigQuery and back to BigQuery) to prepare the data for modeling in AutoML tables. The Dataprep job transforms and preprocesses the data, also making it available in BigQuery for analysis. This process emulates a batch processing system using a basic ETL pipeline to a warehouse utility.
+Pipeline: The data is stored in Cloud Storage and using the BigQuery Data Transfer Service it is moved to BigQuery for processing and analysis. DataPrep preprocesses and transforms the data, returning it to a separate table within BigQuery.
 
-The application is stored in Github as well as GCP Cloud Repositories. For development, CircleCI is integrated for continuous integration and App Engine enables continuous deployment using a .yaml file. Ultimately, the source code can be modified in Github and the results are immediately applied to the application. The code for the front-end is Python (utilizing Flask) and HTML. 
+Deployment: The source files are stored in Github, pushed to Cloud Source Repositories, and utilizing a trigger the app automatically deploys.
+
+Interface: Python (w/Flask) and HTML comprise the front end. The model is stored in AutoML Tables. When a user inputs data into the required fields to yield a prediction, the data is sent to the model and the model returns a probability of churn.
 
 # Authors
 
